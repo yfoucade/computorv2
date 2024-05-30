@@ -70,3 +70,21 @@ class ImaginaryUnitTokenScanner(TokenScanner):
         if string.startswith('i') and not string[1].isalpha():
             return 'i'
         return None
+
+
+class IdentifierTokenScanner(TokenScanner):
+    """
+    Any sequence of aphabetical characters except 'i'.
+    """
+    def __init__(self):
+        self.target_token_class = IdentifierToken
+
+    def get_token(self, string: str):
+        i = 0
+        while i < len(string) and string[i].isalpha():
+            i += 1
+        res = string[:i]
+        if res not in ('', 'i'):
+            return res
+        return None
+

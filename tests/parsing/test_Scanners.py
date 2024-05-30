@@ -114,5 +114,30 @@ class TestImaginaryUnitTokenScanner(unittest.TestCase):
         self.assertEqual(self.scanner.scan('i12'), self.target_token_class('i'))
 
 
+class TestIdentifierTokenScanner(unittest.TestCase):
+    def setUp(self) -> None:
+        self.scanner = IdentifierTokenScanner()
+        self.target_token_class = IdentifierToken
+        return super().setUp()
+
+    def test_target_token_class(self):
+        self.assertEqual(self.scanner.target_token_class, self.target_token_class)
+
+    def test_return_none_if_no_identifier_at_start(self):
+        self.assertEqual(self.scanner.scan(""), None)
+        self.assertEqual(self.scanner.scan("1i(2)3"), None)
+        self.assertEqual(self.scanner.scan(" i[]abc"), None)
+        self.assertEqual(self.scanner.scan("1;23"), None)
+        self.assertEqual(self.scanner.scan(" i"), None)
+
+    def test_return_token_on_success(self):
+        self.assertEqual(self.scanner.scan('a'), self.target_token_class('a'))
+        self.assertEqual(self.scanner.scan('abc'), self.target_token_class('abc'))
+        self.assertEqual(self.scanner.scan('index'), self.target_token_class('index'))
+
+        self.assertEqual(self.scanner.scan('ii24'), self.target_token_class('ii'))
+        self.assertEqual(self.scanner.scan('ii abc'), self.target_token_class('ii'))
+
+
 if __name__ == "__main__":
     unittest.main()
