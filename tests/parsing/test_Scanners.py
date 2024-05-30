@@ -106,6 +106,7 @@ class TestImaginaryUnitTokenScanner(unittest.TestCase):
         self.assertEqual(self.scanner.scan(" i[]abc"), None)
         self.assertEqual(self.scanner.scan("1;23"), None)
         self.assertEqual(self.scanner.scan(" i"), None)
+        self.assertEqual(self.scanner.scan("index"), None)
 
     def test_return_token_on_success(self):
         self.assertEqual(self.scanner.scan('i'), self.target_token_class('i'))
