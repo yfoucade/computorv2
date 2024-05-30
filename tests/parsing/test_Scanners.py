@@ -139,5 +139,42 @@ class TestIdentifierTokenScanner(unittest.TestCase):
         self.assertEqual(self.scanner.scan('ii abc'), self.target_token_class('ii'))
 
 
+class TestRationalNumberTokenScanner(unittest.TestCase):
+    def setUp(self) -> None:
+        self.scanner = RationalNumberTokenScanner()
+        self.target_token_class = RationalNumberToken
+        return super().setUp()
+
+    def test_target_token_class(self):
+        self.assertEqual(self.scanner.target_token_class, self.target_token_class)
+
+    def test_return_none_if_no_rational_number_at_start(self):
+        self.assertEqual(self.scanner.scan(""), None)
+        self.assertEqual(self.scanner.scan("a(2)3"), None)
+        self.assertEqual(self.scanner.scan(" a[]abc"), None)
+        self.assertEqual(self.scanner.scan(" 123"), None)
+        self.assertEqual(self.scanner.scan(" .123"), None)
+        self.assertEqual(self.scanner.scan("."), None)
+        self.assertEqual(self.scanner.scan(". "), None)
+
+    def test_return_token_on_success(self):
+        self.assertEqual(self.scanner.scan('1'), self.target_token_class('1'))
+        self.assertEqual(self.scanner.scan('123'), self.target_token_class('123'))
+        self.assertEqual(self.scanner.scan('1.'), self.target_token_class('1.'))
+        self.assertEqual(self.scanner.scan('123.'), self.target_token_class('123.'))
+        self.assertEqual(self.scanner.scan('1.23'), self.target_token_class('1.23'))
+        self.assertEqual(self.scanner.scan('12.3'), self.target_token_class('12.3'))
+        self.assertEqual(self.scanner.scan('.123'), self.target_token_class('.123'))
+
+
+        self.assertEqual(self.scanner.scan('1abc'), self.target_token_class('1'))
+        self.assertEqual(self.scanner.scan('123abc'), self.target_token_class('123'))
+        self.assertEqual(self.scanner.scan('1.abc'), self.target_token_class('1.'))
+        self.assertEqual(self.scanner.scan('123.abc'), self.target_token_class('123.'))
+        self.assertEqual(self.scanner.scan('1.23abc'), self.target_token_class('1.23'))
+        self.assertEqual(self.scanner.scan('12.3abc'), self.target_token_class('12.3'))
+        self.assertEqual(self.scanner.scan('.123abc'), self.target_token_class('.123'))
+
+
 if __name__ == "__main__":
     unittest.main()

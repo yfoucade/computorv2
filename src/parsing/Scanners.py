@@ -88,3 +88,34 @@ class IdentifierTokenScanner(TokenScanner):
             return res
         return None
 
+
+class RationalNumberTokenScanner(TokenScanner):
+    """
+    An integer, or a number with a decimal separator '.' with at least
+    one of integer and fractional parts.
+    ex:
+        123
+        123.
+        12.3
+        .123
+    """
+    def __init__(self):
+        self.target_token_class = RationalNumberToken
+
+    def get_token(self, string: str):
+        i = 0
+        if string[i].isdigit():
+            while i < len(string) and string[i].isdigit():
+                i += 1
+            if i < len(string) and string[i] == '.':
+                i += 1
+            while i < len(string) and string[i].isdigit():
+                i += 1
+        elif string[i] == '.':
+            i = 1
+            while i < len(string) and string[i].isdigit():
+                i += 1
+        res = string[:i]
+        if res not in ('', '.'):
+            return res
+        return None

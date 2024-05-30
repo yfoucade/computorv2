@@ -18,3 +18,4 @@ class OperatorToken(Token): pass
 class DelimiterToken(Token): pass
 class ImaginaryUnitToken(Token): pass
 class IdentifierToken(Token): pass
+class RationalNumberToken(Token): pass
