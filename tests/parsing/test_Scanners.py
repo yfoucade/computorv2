@@ -1,7 +1,7 @@
 import unittest
 
-from src.parsing.Tokens import *
-from src.parsing.TokenScanners import *
+from src.parsing.Scanners import OperatorTokenScanner
+from src.parsing.Tokens import OperatorToken
 
 
 class TestOperatorTokenScanner(unittest.TestCase):
