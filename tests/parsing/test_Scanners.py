@@ -166,7 +166,6 @@ class TestRationalNumberTokenScanner(unittest.TestCase):
         self.assertEqual(self.scanner.scan('12.3'), self.target_token_class('12.3'))
         self.assertEqual(self.scanner.scan('.123'), self.target_token_class('.123'))
 
-
         self.assertEqual(self.scanner.scan('1abc'), self.target_token_class('1'))
         self.assertEqual(self.scanner.scan('123abc'), self.target_token_class('123'))
         self.assertEqual(self.scanner.scan('1.abc'), self.target_token_class('1.'))
