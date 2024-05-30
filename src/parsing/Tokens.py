@@ -1,2 +1,19 @@
-class OperatorToken:
-    ...
+from typing import TypeVar
+
+
+Self = TypeVar("Self", bound="Token")
+
+
+class Token:
+    def __init__(self, value: str):
+        if not isinstance(value, str):
+            raise TypeError("value should be of type str.")
+        self.value = value
+
+    def __eq__(self, other: Self):
+        return self.value == other.value
+
+
+class OperatorToken(Token): pass
+class DelimiterToken(Token): pass
+class ImaginaryUnitToken(Token): pass
