@@ -11,7 +11,7 @@ class Token:
         self.value = value
 
     def __eq__(self, other: Self):
-        return self.value == other.value
+        return isinstance(other, type(self)) and self.value == other.value
 
 
 class OperatorToken(Token): pass
