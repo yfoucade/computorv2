@@ -3,12 +3,35 @@ import unittest
 from src.parsing.Scanners import *
 
 
+class TestLexer(unittest.TestCase):
+    def setUp(self) -> None:
+        self.lexer = Lexer()
+        self.OT, self.DT, self.IUT, self.IT, self.RNT, = [
+            OperatorToken, DelimiterToken, ImaginaryUnitToken,
+            IdentifierToken, RationalNumberToken,
+            ]
+        return super().setUp()
+    
+    def test_empty_string_returns_empty_list(self):
+        self.assertListEqual(self.lexer.lex(""), [])
+
+    def test_presence_of_invalid_token_raises_valueerror(self):
+        self.assertRaises(ValueError, self.lexer.lex, "@")
+        self.assertRaises(ValueError, self.lexer.lex, "1 + @")
+
+    def test_valid_token_list(self):
+        self.assertListEqual(
+            self.lexer.lex("   1 + 2 "),
+            [self.RNT('1'), self.OT('+'), self.RNT('2')])
+        self.assertListEqual(
+            self.lexer.lex("3.14i\t*   \n2**3 "),
+            [self.RNT('3.14'), self.IUT('i'), self.OT('*'),
+             self.RNT('2'), self.OT('**'), self.RNT('3')])
+
+
 class TestScannerServer(unittest.TestCase):
     def setUp(self) -> None:
         self.server = ScannerServer()
-        OT, DT, IUT, IT, RNT = [ OperatorToken, DelimiterToken,
-                                ImaginaryUnitToken, IdentifierToken,
-                                RationalNumberToken, ]
         return super().setUp()
 
     def test_no_token_recognized_returns_none(self):
@@ -53,6 +76,7 @@ class TestScannerServer(unittest.TestCase):
             token_type = test_series['token_type']
             for test_string, expected_string in zip(test_series['test_strings'], test_series['result_strings']):
                 self.assertEqual(self.server.scan_next_token(test_string), token_type(expected_string))
+
 
 class TestTokenScanner(unittest.TestCase):
     def test_abstract_class(self):

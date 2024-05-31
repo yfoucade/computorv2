@@ -3,6 +3,29 @@ import abc
 from .Tokens import *
 
 
+class Lexer:
+    def __init__(self):
+        self.scanner_server = ScannerServer()
+
+    def lex(self, string: str):
+        res = []
+        if not string:
+            return res
+        i = 0
+        while i < len(string):
+            while i < len(string) and string[i].isspace():
+                i += 1
+            if i == len(string):
+                break
+            new_token = self.scanner_server.scan_next_token(string[i:])
+            if new_token is None:
+                raise ValueError(f"unrecognized token at {i}")
+            res.append(new_token)
+            i += len(new_token.value)
+
+        return res
+
+
 class ScannerServer:
     def __init__(self):
         self.token_scanners = [ OperatorTokenScanner(), DelimiterTokenScanner(),
