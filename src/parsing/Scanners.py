@@ -3,6 +3,22 @@ import abc
 from .Tokens import *
 
 
+class ScannerServer:
+    def __init__(self):
+        self.token_scanners = [ OperatorTokenScanner(), DelimiterTokenScanner(),
+                                ImaginaryUnitTokenScanner(), IdentifierTokenScanner(),
+                                RationalNumberTokenScanner(), ]
+
+    def scan_next_token(self, string: str) -> Token | None:
+        tokens = [scanner.scan(string) for scanner in self.token_scanners]
+        tokens = [t for t in tokens if t is not None]
+        if not tokens:
+            return None
+        if len(tokens) > 1: # pragma: no cover
+            raise ValueError("Ambiguous value")
+        return tokens[0]
+
+
 class TokenScanner(abc.ABC):
     @abc.abstractmethod
     def __init__(self):

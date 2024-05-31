@@ -1,8 +1,58 @@
 import unittest
 
 from src.parsing.Scanners import *
-from src.parsing.Tokens import OperatorToken
 
+
+class TestScannerServer(unittest.TestCase):
+    def setUp(self) -> None:
+        self.server = ScannerServer()
+        OT, DT, IUT, IT, RNT = [ OperatorToken, DelimiterToken,
+                                ImaginaryUnitToken, IdentifierToken,
+                                RationalNumberToken, ]
+        return super().setUp()
+
+    def test_no_token_recognized_returns_none(self):
+        self.assertIsNone(self.server.scan_next_token(""))
+        self.assertIsNone(self.server.scan_next_token(" "))
+        self.assertIsNone(self.server.scan_next_token(">"))
+        self.assertIsNone(self.server.scan_next_token("{"))
+        self.assertIsNone(self.server.scan_next_token("."))
+        self.assertIsNone(self.server.scan_next_token(".abc"))
+
+    def test_valid_tokens(self):
+        tests = [
+            {
+                "token_type": OperatorToken,
+                "test_strings": ['+', '-', '*', '/', '%', '^', '**', '=', '?',
+                                 '+ 2', '+ .', '***', '*+*',],
+                "result_strings": ['+', '-', '*', '/', '%', '^', '**', '=', '?',
+                                 '+', '+', '**', '*',],
+            },
+            {
+                "token_type": DelimiterToken,
+                "test_strings": ['(', ')', '[', ']', ',', ';', '()', '[[]]', ';,',],
+                "result_strings": ['(', ')', '[', ']', ',', ';', '(', '[', ';',],
+            },
+            {
+                "token_type": ImaginaryUnitToken,
+                "test_strings": ['i', 'i123', 'i i', 'i.1', 'i()'],
+                "result_strings": ['i']*5,
+            },
+            {
+                "token_type": IdentifierToken,
+                "test_strings": ['a', 'index', 'iota', 'abc123', 'abc_'],
+                "result_strings": ['a', 'index', 'iota', 'abc', 'abc'],
+            },
+            {
+                "token_type": RationalNumberToken,
+                "test_strings": ['0', '123', '123.', '.123', '12.3', '123abc', '1+2'],
+                "result_strings": ['0', '123', '123.', '.123', '12.3', '123', '1'],
+            },
+        ]
+        for test_series in tests:
+            token_type = test_series['token_type']
+            for test_string, expected_string in zip(test_series['test_strings'], test_series['result_strings']):
+                self.assertEqual(self.server.scan_next_token(test_string), token_type(expected_string))
 
 class TestTokenScanner(unittest.TestCase):
     def test_abstract_class(self):
